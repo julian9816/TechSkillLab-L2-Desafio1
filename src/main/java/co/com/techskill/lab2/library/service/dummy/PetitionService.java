@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,4 +51,15 @@ public class PetitionService {
     }
 
     //TO - DO: Challenge #1
+
+    public Flux<String> dummyFindByPrioritySeven() {
+        return dummyFindAll()
+                .filter(petition -> petition.getPriority() >= 7)
+                .map(petitionDTO -> LocalTime.now() + " Priority " + petitionDTO.getPriority()
+                        + ", Petition ID: " + petitionDTO.getPetitionId()
+                        +",  For Book ID:  " + petitionDTO.getBookId()+"\n")
+                .delayElements(Duration.ofMillis(500))
+                .limitRate(1)
+                .doOnNext(System.out::println);
+    }
 }
